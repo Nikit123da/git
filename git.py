@@ -1,11 +1,12 @@
 import os, subprocess, sys
 from colorama import Fore
+import hashlib
 
 def git_init()->None:
         #create a .git folder with it's subfolders and files
 
     files = os.listdir('.')
-    matches = [f for f in files if '.bad_git' in f]
+    matches = [f for f in  files if '.bad_git' in f]
 
     print("len, ", matches)
 
@@ -17,17 +18,31 @@ def git_init()->None:
             pass
         with open(".bad_git/HEAD", "w") as f:
             pass
-        os.mkdir(".bad_git/hooks")
-        os.mkdir(".bad_git/info")
         os.mkdir(".bad_git/objects")
+        os.mkdir(".bad_git/hooks")
+        os.mkdir(".bad_git/objects/pack")
+        os.mkdir(".bad_git/objects/info")
         os.mkdir(".bad_git/refs")
         print(Fore.GREEN + "bad git has been initializd ")
     except FileExistsError as e:
         print(e)
 
- 
+def hash_obj(obj)->str:
+    #hashes any object into a string of a specified len
+    return hashlib.sha1(obj).hexdigest()
 
-
+def create_object_file(obj):
+    #Create a file with the first two letter of the hash if not created yet, and insert the other remaining hash into it. 
+    #!MIGHT NEED TO MAKE THE INTERNAL HASH AS AN OBJECT.
+    try:
+        os.mkdir(f"./bad_git/objects/{obj[0:2]}")
+        #TODO:put the boj inside there.
+        
+    except FileExistsError as e:
+        print(e)
+    except FileNotFoundError as e:
+        print(e)
+    pass
 
 def main()->None:
     args_num = len(sys.argv)
